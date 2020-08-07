@@ -38,7 +38,7 @@ async def friday_again():
             # sends the Friday again garfie baby image on Fridays at 2:00 PM
             await channel.send('https://imgur.com/a/WrCgTLK')
         # wishes members a happy birthday
-        if ((not os.path.exists(filename)) or os.stat(file_path).st_size == 0):
+        if ((not os.path.exists(filename)) or os.stat(filename).st_size == 0):
             return
         birthday_list = open(filename,'r')
         # checks birthday list for any birthdays
