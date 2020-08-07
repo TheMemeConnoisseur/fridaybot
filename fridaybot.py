@@ -5,6 +5,7 @@ from discord.ext import commands, tasks
 from discord import Client
 import datetime
 import asyncio
+import os
 
 bot = commands.Bot(command_prefix = '!')
 
@@ -37,6 +38,8 @@ async def friday_again():
             # sends the Friday again garfie baby image on Fridays at 2:00 PM
             await channel.send('https://imgur.com/a/WrCgTLK')
         # wishes members a happy birthday
+        if ((not os.path.exists(filename)) or os.stat(file_path).st_size == 0):
+            return
         birthday_list = open(filename,'r')
         # checks birthday list for any birthdays
         for entry in birthday_list:
@@ -59,6 +62,28 @@ async def status(ctx):
         await ctx.send('friday_again failed')
     else:
         await ctx.send('friday_again should be working')
+
+@bot.command(pass_context=True)
+async def list_birthdays(ctx):
+    if ((not os.path.exists(filename)) or os.stat(filename).st_size == 0):
+        await ctx.send('I don\'t have records of any birthdays yet')
+        return
+    birthday_list = open(filename,'r')
+    birthdays = ''
+    # checks birthday list for any birthdays
+    for entry in birthday_list:
+        info = entry.split(',')
+        info[3] = info[3][:-1]
+        name = info[0]
+        birth_day = int(info[1])
+        birth_month = int(info[2])
+        birth_year = int(info[3])
+        new_string = f'{name}\'s birthday is {get_month(birth_month)} {birth_day}{determine_ordinal(birth_day)}, {birth_year}\n'
+        birthdays = birthdays + new_string
+    birthday_list.close()
+    birthdays = birthdays[:-1]
+    await ctx.send(birthdays)
+    
 
 @bot.event
 async def on_member_join(member):
