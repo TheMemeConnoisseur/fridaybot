@@ -32,6 +32,7 @@ async def friday_again():
     day = datetime.datetime.today().day
     channel = bot.get_channel(channel_id)
     if (str(current_time) == send_time):
+        print(str(current_time))
         if (weekday == friday):
             # sends the Friday again garfie baby image on Fridays at 2:00 PM
             await channel.send('https://imgur.com/a/WrCgTLK')
@@ -39,8 +40,8 @@ async def friday_again():
         birthday_list = open(filename,'r')
         # checks birthday list for any birthdays
         for entry in birthday_list:
-            string = birthday_list.readline()
-            info = string.split(',')
+            info = entry.split(',')
+            info[3] = info[3][:-1]
             name = info[0]
             birth_day = int(info[1])
             birth_month = int(info[2])
@@ -52,7 +53,12 @@ async def friday_again():
                 await channel.send(wish_string)
         birthday_list.close()
 
-
+@bot.command(pass_context=True)
+async def status(ctx):
+    if friday_again.failed():
+        await ctx.send('friday_again failed')
+    else:
+        await ctx.send('friday_again should be working')
 
 @bot.event
 async def on_member_join(member):
